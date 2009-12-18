@@ -1,0 +1,5 @@
+rtems-debhelper (1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Fri, 18 Dec 2009 12:04:40 -0500

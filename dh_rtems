@@ -1,0 +1,95 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_rtems - Generate RTEMS dependency information
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Parse::DebControl;
+
+=head1 SYNOPSIS
+
+B<dh_rtems> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+This helper uses the 'Rtems-Depends' tag in the source section of 'debian/control'
+to create a list of binary package dependencies for RTEMS libraries using the
+correct bsp name.  This list is used to define the substvar '${rtems:Depends}'
+for each package.
+
+The list of names given in 'Rtems-Depends' are of the form 'rtems-modulename' or 'rtems'
+for RTEMS itself.  These names are expanded to the full 'rtems-modulename-bspname'.
+This list will almost always include 'rtems'.
+
+Since RTEMS does not use ELF shared libraries the usual methods for automatically
+generating binary package dependencies will not work.  Instead this program assumes
+that the depended packages are compatible in the range VER-CUR through VER-9999.
+If the current version of the package 'rtems-mvme3100' is 4.9.3-4, then this becomes:
+4.9.3-4 through 4.9.3-9999.
+
+This basically assumes that every upstream change is ABI incompatible.  This is not
+always true, but absent significant auditing is the only safe default.
+
+=cut
+
+init();
+
+my $parser = new Parse::DebControl;
+
+my $control = $parser->parse_file('./debian/control', { useTieIxHash => 'true' });
+
+my @rdeps = split(",",$control->[0]->{"Rtems-Depends"});
+
+my $pkg;
+foreach $pkg(getpackages("arch")) {
+	verbose_print("Package: $pkg\n");
+
+	# Skip packages not named 'rtems-modulename-bspname'
+	if( $pkg !~ /^rtems-[^-]+-[^-]+$/) {
+		next;
+	}
+
+	my ($mod, $bsp) = ($pkg =~ /^rtems-([^-]+)-([^-]+)$/);
+
+	my $rdep;
+	foreach $rdep(@rdeps) {
+		$rdep =~ s/^\s+//;
+		$rdep =~ s/\s+$//;
+
+		my $ver = `dpkg-query -W -f \'\${Version}\' $rdep-$bsp`;
+		# The following requires perl >= 5.10
+		if( ${^CHILD_ERROR_NATIVE} != 0 ) {
+			warning("Package name $rdep-$bsp not installed");
+			next;
+		}
+
+		if( $ver =~ /^(.*)-\d+$/ ) {
+			# Non-native package
+			verbose_print("Dep: $rdep-$bsp (>= $ver), $rdep-$bsp (<= $1-9999)\n");
+			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", ">= $ver");
+			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", "<= $1-9999");
+		} else {
+			# Native Debian package
+			# TODO: how to do this correctly?
+			verbose_print("Dep: $rdep-$bsp\n");
+			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp");
+		}
+	}
+
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>
+
+This program is a not part of debhelper.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

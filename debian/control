@@ -1,0 +1,14 @@
+Source: rtems-debhelper
+Section: devel
+Priority: optional
+Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
+Build-Depends: cdbs, debhelper (>= 7)
+Standards-Version: 3.8.0
+Homepage: http://pubweb.bnl.gov/~mdavidsaver
+
+Package: rtems-debhelper
+Architecture: all
+Depends: ${perl:Depends}
+Description: Helper for building RTEMS packages
+ A helper script to calculate package dependencies
+ for RTEMS packages.  Only needed when creating packages.
