@@ -1,3 +1,9 @@
+rtems-debhelper (2) unstable; urgency=low
+
+  * Missing runtime dependencies.
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Thu, 28 Jan 2010 04:20:30 -0500
+
 rtems-debhelper (1) unstable; urgency=low
 
   * Initial Release.
