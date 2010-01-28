@@ -9,7 +9,8 @@ Homepage: http://pubweb.bnl.gov/~mdavidsaver
 
 Package: rtems-debhelper
 Architecture: all
-Depends: ${perl:Depends}, perl (>= 5.10.0)
+Depends: ${perl:Depends}, perl (>= 5.10.0),
+         debhelper, libparse-debcontrol-perl,
 Description: Helper for building RTEMS packages
  A helper script to calculate package dependencies
  for RTEMS packages.  Only needed when creating packages.
