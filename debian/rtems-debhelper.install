@@ -1,3 +1,0 @@
-usr/bin/dh_rtems
-usr/share/man/man1/dh_rtems.1
-usr/share/perl5/Debian/Debhelper/Sequence/rtems.pm
