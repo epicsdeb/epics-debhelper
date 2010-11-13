@@ -1,3 +1,9 @@
+rtems-debhelper (4) unstable; urgency=low
+
+  * dh_rtems: search indep packages as well
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Sat, 13 Nov 2010 11:05:08 -0500
+
 rtems-debhelper (3) unstable; urgency=low
 
   * Install a dh addon sequence
