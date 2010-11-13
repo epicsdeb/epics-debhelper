@@ -45,7 +45,7 @@ my $control = $parser->parse_file('./debian/control', { useTieIxHash => 'true' }
 my @rdeps = split(",",$control->[0]->{"Rtems-Depends"});
 
 my $pkg;
-foreach $pkg(getpackages("arch")) {
+foreach $pkg(getpackages()) {
 	verbose_print("Package: $pkg\n");
 
 	# Skip packages not named 'rtems-modulename-bspname'
