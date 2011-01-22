@@ -67,7 +67,7 @@ foreach $pkg(getpackages()) {
 			next;
 		}
 
-		if( $ver =~ /^(.*)-\d+$/ ) {
+		if( $ver =~ /^([^-]+)-.+$/ ) {
 			# Non-native package
 			verbose_print("Dep: $rdep-$bsp (>= $ver), $rdep-$bsp (<= $1-9999)\n");
 			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", ">= $ver");
