@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_fixepicslibs - Fix up EPICS shared libraries
+
+=head1 SYNOPSIS
+
+B<dh_fixepicslibs> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+Looks for shared libraries in debian/tmp/${EPICSBASE}/lib/${EPICS_HOST_ARCH}/.
+Moves any shared libraries with SO names found to debian/tmp/usr/lib/
+and adjusts the symlink in the original directory.
+
+This allows binaries linked against libXYZ.so.# to find it in the
+default search path when run.  At the same time new binaries being
+linked must explicitly add ${EPICSBASE}/lib/<targetname>/ to
+the search path.
+
+The intent of this process is to prevent accidentally linking
+against the wrong copy/version of a library.
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover);
+
+init();
+
+setepicsenv();
+
+# collect host libraries with SO names
+my @libs = glob("debian/tmp/$ENV{EPICS_BASE}/lib/$ENV{EPICS_HOST_ARCH}/lib*.so.*");
+
+if( @libs > 0) {
+    doit("install","-m","755","-d","debian/tmp/usr/lib");        
+}
+
+foreach my $lib (@libs) {
+    my $edir = dirname($lib);
+    my $lname = basename($lib);
+    my ($base, $sov) = $lname =~ m/(lib.*\.so)\.(.*)/;
+
+    if(-e "$edir/$base" and not -l "$edir/$base") {
+        warning("Warning: Not a symlink:  $edir/$base");
+    }
+
+    doit("mv",$lib,"debian/tmp/usr/lib/$lname");
+    doit("rm","-f","$edir/$base");
+    doit("ln","-s","../../../$lname","$edir/$base");
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<dh_epicsmake(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

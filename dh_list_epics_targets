@@ -1,0 +1,110 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_list_epics_targets - Print a list of installed EPICS targets
+
+=head1 SYNOPSIS
+
+B<dh_list_epics_targets> [S<I<debhelper options>>] [--skiphost] [--neg] -- [posregex] [-negregex]
+
+=head1 DESCRIPTION
+
+Print a list of EPICS targets matching the given constraints.
+Constraints are given as either positive (including) or negative
+(excluding) regular expressions.
+
+By default all targets are printed unless a negative expression is matched.
+If the --neg option is given then no targets are printed unless a positive
+expression is matched.  In either case a target matching a negative
+expression will not be printed.
+
+A negative expression is one which begins with the '-' (dash) charactor.
+The dash is not part of the regular expression.  To start a positive
+expression with a dash it must be escaped with '\'.
+
+The --skiphost argument is equivalent to "-^${EPICS_HOST_ARCH}$".
+
+=head1 EXAMPLES
+
+Print only RTEMS targets
+
+dh_list_epics_targets --neg -- RTEMS
+
+Print all but RTEMS targets
+
+dh_list_epics_targets -- -RTEMS
+
+Print all cross compiler targets
+
+dh_list_epics_targets --skiphost
+
+Print any debug targets
+
+dh_list_epics_targets --neg -- "\-debug$"
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv);
+
+my $skiphost;
+my $neg;
+
+my %args;
+my %options = (
+    "skiphost" => \$skiphost,
+    "neg" => \$neg,
+);
+$args{options}{$_} = $options{$_} foreach keys(%options);
+
+init(%args);
+
+setepicsenv();
+
+my @args = @{$dh{U_PARAMS}};
+
+if($skiphost) {
+    unshift(@args,"-^$ENV{EPICS_HOST_ARCH}\$");
+}
+
+my @dirs = glob("$ENV{EPICS_BASE}/lib/*");
+
+foreach my $libdir (@dirs) {
+    next unless(-d $libdir and not -l $libdir);
+    my $targ = basename($libdir);
+
+    my $cont=($neg ? 0 : 1);
+    foreach my $test (@args) {
+        if( $test =~ m/^-(.*)/ ) {
+            if( $targ =~ m/$1/) {
+                $cont = 0;
+                last;
+            }
+
+        } else {
+            my $tst = $test;
+            $tst = $1 if( $test =~ m/^\\-(.*)/ );
+
+            $cont = 1 if( $targ =~ m/$tst/);
+
+        }
+    }
+    next if(not $cont);
+
+    print "$targ\n";
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<dh_epicsmake(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

@@ -84,9 +84,9 @@ foreach $pkg(getpackages()) {
 
 =head1 SEE ALSO
 
-L<debhelper(7)>
+L<debhelper(7)>, L<dh_epicsmake(7)>
 
-This program is a not part of debhelper.
+This program is a not part of the official debhelper package.
 
 =head1 AUTHOR
 
