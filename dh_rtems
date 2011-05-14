@@ -16,12 +16,12 @@ B<dh_rtems> [S<I<debhelper options>>]
 
 =head1 DESCRIPTION
 
-This helper uses the 'Rtems-Depends' tag in the source section of 'debian/control'
+This helper uses the 'X-Rtems-Depends' tag in the source section of 'debian/control'
 to create a list of binary package dependencies for RTEMS libraries using the
 correct bsp name.  This list is used to define the substvar '${rtems:Depends}'
 for each package.
 
-The list of names given in 'Rtems-Depends' are of the form 'rtems-modulename' or 'rtems'
+The list of names given in 'X-Rtems-Depends' are of the form 'rtems-modulename' or 'rtems'
 for RTEMS itself.  These names are expanded to the full 'rtems-modulename-bspname'.
 This list will almost always include 'rtems'.
 
@@ -34,6 +34,8 @@ If the current version of the package 'rtems-mvme3100' is 4.9.3-4, then this bec
 This basically assumes that every upstream change is ABI incompatible.  This is not
 always true, but absent significant auditing is the only safe default.
 
+Note: For compatibility 'Rtems-Depends' is also recognized.
+
 =cut
 
 init();
@@ -42,7 +44,17 @@ my $parser = new Parse::DebControl;
 
 my $control = $parser->parse_file('./debian/control', { useTieIxHash => 'true' });
 
-my @rdeps = split(",",$control->[0]->{"Rtems-Depends"});
+my @rdeps;
+my %srcfields = %{$control->[0]};
+
+while (my ($k,$v) = each(%srcfields)) {
+	next unless( $k =~ m/^(?:X[BCS]*-)?Rtems-Depends$/ );
+	@rdeps = split(",",$v);
+	foreach my $rdep (@rdeps) {
+		chomp($rdep);
+	}
+	last;
+}
 
 my $pkg;
 foreach $pkg(getpackages()) {
@@ -56,7 +68,7 @@ foreach $pkg(getpackages()) {
 	my ($mod, $bsp) = ($pkg =~ /^rtems-([^-]+)-([^-]+)$/);
 
 	my $rdep;
-	foreach $rdep(@rdeps) {
+	foreach my $rdep (@rdeps) {
 		$rdep =~ s/^\s+//;
 		$rdep =~ s/\s+$//;
 
@@ -67,7 +79,7 @@ foreach $pkg(getpackages()) {
 			next;
 		}
 
-		if( $ver =~ /^([^-]+)-.+$/ ) {
+		if( $ver =~ /^(.*)-[^-]*$/ ) {
 			# Non-native package
 			verbose_print("Dep: $rdep-$bsp (>= $ver), $rdep-$bsp (<= $1-9999)\n");
 			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", ">= $ver");
