@@ -16,14 +16,14 @@ B<dh_rtems> [S<I<debhelper options>>]
 
 =head1 DESCRIPTION
 
-This helper uses the 'X-Rtems-Depends' tag in the source section of 'debian/control'
+This helper uses the 'X-Rtems-Build-Depends' tag in the source section of 'debian/control'
 to create a list of binary package dependencies for RTEMS libraries using the
 correct bsp name.  This list is used to define the substvar '${rtems:Depends}'
 for each package.
 
-The list of names given in 'X-Rtems-Depends' are of the form 'rtems-modulename' or 'rtems'
-for RTEMS itself.  These names are expanded to the full 'rtems-modulename-bspname'.
-This list will almost always include 'rtems'.
+The list of names given in 'X-Rtems-Build-Depends' are of the form 'rtems-modulename'
+or 'rtems' for RTEMS itself.  These names are expanded to the full
+'rtems-modulename-bspname'.  This list will almost always include 'rtems'.
 
 Since RTEMS does not use ELF shared libraries the usual methods for automatically
 generating binary package dependencies will not work.  Instead this program assumes
@@ -31,8 +31,8 @@ that the depended packages are compatible in the range VER-CUR through VER-9999.
 If the current version of the package 'rtems-mvme3100' is 4.9.3-4, then this becomes:
 4.9.3-4 through 4.9.3-9999.
 
-This basically assumes that every upstream change is ABI incompatible.  This is not
-always true, but absent significant auditing is the only safe default.
+This assumes that every upstream change is ABI incompatible.  While not
+always true, absent significant auditing, it is the only safe default.
 
 Note: For compatibility 'Rtems-Depends' is also recognized.
 
@@ -48,7 +48,7 @@ my @rdeps;
 my %srcfields = %{$control->[0]};
 
 while (my ($k,$v) = each(%srcfields)) {
-	next unless( $k =~ m/^(?:X[BCS]*-)?Rtems-Depends$/ );
+	next unless( $k =~ m/^(?:X[BCS]*-)?Rtems-(?:Build-)?Depends$/ );
 	@rdeps = split(",",$v);
 	foreach my $rdep (@rdeps) {
 		chomp($rdep);
@@ -65,30 +65,49 @@ foreach $pkg(getpackages()) {
 		next;
 	}
 
-	my ($mod, $bsp) = ($pkg =~ /^rtems-([^-]+)-([^-]+)$/);
+	my ($mod, $bsp) = ($pkg =~ /^rtems-(.+)-([^-]+)$/);
 
 	my $rdep;
 	foreach my $rdep (@rdeps) {
 		$rdep =~ s/^\s+//;
 		$rdep =~ s/\s+$//;
 
-		my $ver = `dpkg-query -W -f \'\${Version}\' $rdep-$bsp`;
+		# get control infor for depended package
+		my $depinfo = `dpkg --print-avail $rdep-$bsp`;
 		# The following requires perl >= 5.10
 		if( ${^CHILD_ERROR_NATIVE} != 0 ) {
 			warning("Package name $rdep-$bsp not installed");
 			next;
 		}
 
-		if( $ver =~ /^(.*)-[^-]*$/ ) {
+		my $control = $parser->parse_mem($depinfo, { useTieIxHash => 'true' });
+
+		# Note: there will be only one section
+		my $ver = $control->[0]->{"Version"};
+
+		# construct condition for direct dependency
+		if( $ver =~ m/^(.*)-[^-]*$/m ) {
 			# Non-native package
 			verbose_print("Dep: $rdep-$bsp (>= $ver), $rdep-$bsp (<= $1-9999)\n");
 			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", ">= $ver");
 			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", "<= $1-9999");
 		} else {
 			# Native Debian package
-			# TODO: how to do this correctly?
 			verbose_print("Dep: $rdep-$bsp\n");
-			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp");
+			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", ">= $ver");
+			# this should cover any binary rebuilds...
+			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", "<= ${ver}++");
+		}
+
+		# copy conditions for indirect dependencies
+		if(exists $control->[0]->{"Depends"}) {
+			my @deps = split(",", $control->[0]->{"Depends"});
+			my @res = ();
+			for my $dep (@deps) {
+				# only those involving bsp specific packages
+				unshift(@res,$dep) if( $dep =~ m/$bsp/);
+			}
+			addsubstvar($pkg, "rtems:Depends", join(", ", @res) );
 		}
 	}
 
