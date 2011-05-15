@@ -1,0 +1,60 @@
+=head1 NAME
+
+epics-debhelper - Debhelper for EPICS build system
+
+=head1 SYNOPSIS
+
+dh ... -Sepicsmake
+
+dh_list_epics_targets
+
+dh_fixepicslibs
+
+dh_rtems
+
+dh_strip_rtems
+
+=head1 DESCRIPTION
+
+A collection of debhelper tools to aid in packaging
+software using the EPICS makefile system.  Components
+include:
+
+Support in dh which gives the dh_auto_* utilities better
+defaults.  PATH and LD_LIBRARY_PATH are set to include
+bin/<hostarch> and lib/<hostarch>.  The make variables
+USE_RPATH=NO, SHRLIB_VERSION, and EPICS_HOST_ARCH are
+also set, but may be overridden (see below).
+
+=head1 ENVIRONMENT
+
+=over 6
+
+=item SHRLIB_VERSION
+
+The SO name to use for shared libraries.  If unset a suitable default
+is computed.
+
+=item EPICS_HOST_ARCH
+
+Selects build archetecture.  If unset, a default is automatically
+select.
+
+=item EPICS_BASE
+
+Location of EPICS environment.  If unset the default
+is used.
+
+=back
+
+=head1 SEE ALSO
+
+L<dh(1)>, L<debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

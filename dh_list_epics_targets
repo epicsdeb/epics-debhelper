@@ -99,7 +99,7 @@ foreach my $libdir (@dirs) {
 
 =head1 SEE ALSO
 
-L<debhelper(7)>, L<dh_epicsmake(7)>
+L<debhelper(7)>, L<epics-debhelper(7)>
 
 This program is a not part of the official debhelper package.
 

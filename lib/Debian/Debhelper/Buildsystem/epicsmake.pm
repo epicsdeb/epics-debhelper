@@ -5,52 +5,6 @@
 
 package Debian::Debhelper::Buildsystem::epicsmake;
 
-=head1 NAME
-
-Debian::Debhelper::Buildsystem::epicsmake - Debhelper for EPICS
-build system
-
-=head1 SYNOPSIS
-
-B<dh> ... -Sepicsmake
-
-=head1 DESCRIPTION
-
-A specialization of Debian::Debhelper::Buildsystem::makefile
-for the EPICS makefile build system.
-
-=head1 ENVIRONMENT
-
-=over 6
-
-=item SHRLIB_VERSION
-
-The SO name to use for shared libraries.  If unset a suitable default
-is computed.
-
-=item EPICS_HOST_ARCH
-
-Selects build archetecture.  If unset, a default is automatically
-select.
-
-=item EPICS_BASE
-
-Location of EPICS environment.  If unset the default
-is used.
-
-=back
-
-=head1 SEE ALSO
-
-L<dh(1)>, L<debhelper(7)>
-
-This program is a not part of the official debhelper package.
-
-=head1 AUTHOR
-
-Michael Davidsaver <mdavidsaver@bnl.gov>
-
-=cut
 
 use strict;
 use Cwd qw(abs_path);
