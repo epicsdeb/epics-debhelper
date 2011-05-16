@@ -1,0 +1,93 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_rtems_lintian - Install standard overrides for RTEMS packages
+
+=head1 SYNOPSIS
+
+B<dh_rtems_lintian> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+The Lintian utility produces several false positives for
+all RTEMS packages.  This utility installs a standard overrides file
+if not debian/packagename.lintian-overrides is provided.
+
+The current list of overrides is:
+
+=over 3
+
+=item arch-independent-package-contains-binary-or-object
+
+RTEMS packages can be marked "Architecture: all" if they contain
+no host binaries.  Target binaries produced by a cross-compiler
+do not depend on the host architecture.
+
+=item statically-linked-binary
+
+While RTEMS uses the ELF format for executables and object files, it
+does not support shared libraries.  Therefore executables
+can only be statically linked.
+
+=item unstripped-binary-or-object
+
+Splitting the debug symbols into a seperate file (in /usr/lib/debug)
+isn't possible for static libraries.  Therefore binaries are left unstripped.
+
+=back
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover);
+
+init();
+
+setepicsenv();
+
+foreach my $pkg (getpackages()) {
+    next unless($pkg =~ m/^rtems-(.+)-([^-]+)$/);
+    my $srcname = $1;
+    my $bsp = $2;
+
+    next if(-f "debian/$pkg.lintian-overrides" or 
+            -f "debian/$pkg/usr/share/lintian/overrides/$pkg");
+
+    doit("install","-d","debian/$pkg/usr/share/lintian/overrides")
+        if(! -d "debian/$pkg/usr/share/lintian/overrides");
+
+    verbose_print("Write overrides for $pkg");
+    my $over;
+    if($dh{NO_ACT}) {
+        open($over, '>-'); # stdout
+    } else {
+        open($over, '>', "debian/$pkg/usr/share/lintian/overrides/$pkg") || 
+        error("failed to write override");
+    }
+
+    print {$over} << "OVERRIDE";
+$pkg: arch-independent-package-contains-binary-or-object
+# Target binaries are independent of the host
+$pkg: statically-linked-binary
+# Everything RTEMS is statically linked
+$pkg: unstripped-binary-or-object
+# The user must decide whether to strip
+OVERRIDE
+
+    close($over);
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

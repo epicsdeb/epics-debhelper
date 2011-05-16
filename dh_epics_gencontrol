@@ -4,9 +4,16 @@
 
 dh_epics_gencontrol - Create debian/control from debian/control.base
 
+=head1 SYNOPSIS
+
+B<dh_epics_gencontrol> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
 =cut
 
 use strict;
+use warnings;
 use Debian::Debhelper::Dh_Lib;
 use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_targets);
 use Parse::DebControl;
@@ -118,3 +125,16 @@ foreach my $pkg (@rtemspkgs) {
 }
 
 close(CONT);
+
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-dh_list_epics_targets - Print a list of installed EPICS targets
+dh_epics_list_targets - Print a list of installed EPICS targets
 
 =head1 SYNOPSIS
 
-B<dh_list_epics_targets> [S<I<debhelper options>>] [--skiphost] [--neg] -- [posregex] [-negregex]
+B<dh_epics_list_targets> [S<I<debhelper options>>] [--skiphost] [--neg] -- [posregex] [-negregex]
 
 =head1 DESCRIPTION
 
@@ -29,19 +29,19 @@ The --skiphost argument is equivalent to "-^${EPICS_HOST_ARCH}$".
 
 Print only RTEMS targets
 
-dh_list_epics_targets --neg -- RTEMS
+dh_epics_list_targets --neg -- RTEMS
 
 Print all but RTEMS targets
 
-dh_list_epics_targets -- -RTEMS
+dh_epics_list_targets -- -RTEMS
 
 Print all cross compiler targets
 
-dh_list_epics_targets --skiphost
+dh_epics_list_targets --skiphost
 
 Print any debug targets
 
-dh_list_epics_targets --neg -- "\-debug$"
+dh_epics_list_targets --neg -- "\-debug$"
 
 =cut
 

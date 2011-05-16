@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_rtems_install - Install RTEMS binaries in standard locations
+
+=head1 SYNOPSIS
+
+B<dh_rtems_install> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+Most RTEMS packages will contain only (target) executables and static libraries.
+The EPICS build system places these in well known locations
+${EPICS_BASE}/lib/RTEMS-.../ and ${EPICS_BASE}/bin/RTEMS-.../
+
+Install files from these locations into the appropriate package.
+Package name is used to determine which EPICS target name is copied.
+The package rtems-...-mvme3100 will install the target RTEMS-mvme3100.
+
+If an install file debian/packagename.install is provided then this
+utility does nothing for that package.
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover);
+
+init();
+
+setepicsenv();
+
+foreach my $pkg (getpackages()) {
+    next unless($pkg =~ m/^rtems-(.+)-([^-]+)$/);
+    my $srcname = $1;
+    my $bsp = $2;
+
+    # install RTEMS executables and libraries
+    next if(-f "debian/$pkg.install");
+
+    foreach my $part (qw(lib bin)) {
+
+        if(-d "debian/tmp/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}") {
+
+            doit("install","-d","debian/$pkg/$ENV{EPICS_BASE}/$part");
+
+            doit("cp","-r","debian/tmp/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}",
+                        "debian/$pkg/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}");
+
+            my @bins = glob("debian/$pkg/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}/*");
+
+            # RTEMS binaries are not executable on the host
+            foreach my $bin(@bins) {
+                next unless(-x $bin);
+
+                doit("chmod","-x",$bin);
+            }
+        }
+    }
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut
