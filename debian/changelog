@@ -1,4 +1,4 @@
-epics-debhelper (6~atest1) unstable; urgency=low
+epics-debhelper (6) unstable; urgency=low
 
   * Rename package to epics-debhelper
   * Add:
