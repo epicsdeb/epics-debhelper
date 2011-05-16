@@ -16,6 +16,7 @@ sub new {
     my $class=shift;
     my $this=$class->SUPER::new(@_);
     $this->enforce_in_source_building();
+    setepicsenv();
     return $this;
 }
 
@@ -31,12 +32,12 @@ sub check_auto_buildable {
         return 0;
     }
 
-    return (-e $this->get_buildpath("configure/RELEASE") ? 5 : 0);
+    return (-e $this->get_sourcepath("configure/RELEASE") ? 5 : 0);
 }
 
 sub setbuildenv {
     my $this=shift;
-    setepicsenv();
+
     my $bindir = $this->get_sourcepath("bin/$ENV{EPICS_HOST_ARCH}");
     my $libdir = $this->get_sourcepath("lib/$ENV{EPICS_HOST_ARCH}");
     $ENV{PATH} = "$ENV{PWD}/${bindir}:$ENV{PATH}";
@@ -73,9 +74,14 @@ sub test {
 sub install {
     my $this=shift;
     my $destdir=shift;
-    setepicsenv();
+
     $this->make_first_existing_target(['install'],
         "INSTALL_LOCATION=$destdir/$ENV{EPICS_BASE}", @_);
+}
+
+sub clean {
+    my $this=shift;
+    $this->make_first_existing_target(['distclean', 'realclean', 'clean'], @_);
 }
 
 1
