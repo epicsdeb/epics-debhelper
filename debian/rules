@@ -2,36 +2,24 @@
 
 #export DH_VERBOSE=1
 
+binary binary-arch binary-indep install:
+	dh $@
+install: build
+binary-arch binary-indep: install
+binary: binary-arch binary-indep
+
 build: build-stamp
 build-stamp:
-	dh build --before auto_build
+	dh build --until auto_build
 
-	pod2man --section=1 dh_rtems dh_rtems.1
+	pod2man --section=7 epics-debhelper.txt epics-debhelper.7
 
 	dh build --after auto_build
 	touch $@
 
 clean:
-	dh clean --before auto_clean
+	dh clean --until auto_clean
 
-	rm -f dh_rtems.1
+	rm -f epics-debhelper.7
 
 	dh clean --after auto_clean
-
-install: install-stamp
-install-stamp:
-	dh install --before auto_install
-
-	install -m 755 -t debian/rtems-debhelper/usr/bin dh_rtems dh_strip_rtems
-	install -m 644 -t debian/rtems-debhelper/usr/share/perl5/Debian/Debhelper/Sequence rtems.pm
-
-	dh install --after auto_install
-	touch $@
-
-binary-arch: #install
-	#dh binary-arch
-
-binary-indep: install
-	dh binary-indep
-
-binary: binary-arch binary-indep

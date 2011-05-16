@@ -9,7 +9,7 @@ package Debian::Debhelper::Buildsystem::epicsmake;
 use strict;
 use Cwd qw(abs_path);
 use Debian::Debhelper::Dh_Lib qw(verbose_print);
-use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover);
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover get_targets);
 use base 'Debian::Debhelper::Buildsystem::makefile';
 
 sub new {
@@ -52,8 +52,10 @@ sub setbuildenv {
 sub makeargs {
     my $this=shift;
     my $sov=epics_sover();
+    my $targets=join(" ",get_targets());
     unshift(@_, ("USE_RPATH=NO", "SHRLIB_VERSION=${sov}",
-            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}"));
+            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
+            "CROSS_COMPILER_TARGET_ARCHS=$targets"));
     return @_;
 }
 

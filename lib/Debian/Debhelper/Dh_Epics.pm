@@ -7,9 +7,11 @@ package Debian::Debhelper::Dh_Epics;
 use strict;
 
 use Exporter;
-use vars qw(@ISA @EXPORT %dh);
+use vars qw(@ISA @EXPORT);
 @ISA=qw(Exporter);
-@EXPORT=qw(&setepicsenv &epics_sover);
+@EXPORT=qw(&setepicsenv &epics_sover &get_targets &epics_targets);
+
+use Debian::Debhelper::Dh_Lib qw(basename verbose_print getpackages);
 
 sub setepicsenv {
     if (not exists $ENV{EPICS_BASE}) {
@@ -37,4 +39,59 @@ sub epics_sover {
         ($ver) = $1;
     }
     return $ver;
+}
+
+sub get_targets {
+    if(exists $ENV{CROSS_COMPILER_TARGET_ARCHS}) {
+        my @targets = split(/\s+/, $ENV{CROSS_COMPILER_TARGET_ARCHS});
+        return @targets;
+    }
+
+    my @targets = ();
+
+    if(-d "$ENV{EPICS_BASE}/lib/$ENV{EPICS_HOST_ARCH}-debug") {
+        push(@targets,"$ENV{EPICS_HOST_ARCH}-debug");
+    }
+
+    foreach my $pkg (getpackages()) {
+        if ($pkg =~ m/^rtems-.+-([^-]+)$/) {
+            push(@targets, "RTEMS-$1");
+        }
+    }
+    return @targets;
+}
+
+sub epics_targets {
+    my $neg = shift;
+    my @filters = @_;
+    setepicsenv();
+    my @dirs = glob("$ENV{EPICS_BASE}/lib/*");
+
+    my @ret = ();
+
+    foreach my $libdir (@dirs) {
+        next unless(-d $libdir and not -l $libdir);
+        my $targ = basename($libdir);
+
+        my $cont=($neg ? 0 : 1);
+        foreach my $test (@filters) {
+            if( $test =~ m/^-(.*)/ ) {
+                if( $targ =~ m/$1/) {
+                    $cont = 0;
+                    last;
+                }
+
+            } else {
+                my $tst = $test;
+                $tst = $1 if( $test =~ m/^\\-(.*)/ );
+
+                $cont = 1 if( $targ =~ m/$tst/);
+
+            }
+        }
+        next if(not $cont);
+
+        unshift(@ret, $targ);
+    }
+    return @ret;
 }

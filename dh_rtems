@@ -56,8 +56,7 @@ while (my ($k,$v) = each(%srcfields)) {
 	last;
 }
 
-my $pkg;
-foreach $pkg(getpackages()) {
+foreach my $pkg(getpackages()) {
 	verbose_print("Package: $pkg\n");
 
 	# Skip packages not named 'rtems-modulename-bspname'

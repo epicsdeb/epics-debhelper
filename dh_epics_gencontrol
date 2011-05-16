@@ -1,0 +1,120 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_epics_gencontrol - Create debian/control from debian/control.base
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_targets);
+use Parse::DebControl;
+
+=head1 SYNOPSIS
+
+B<dh_epics_gencontrol> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+Expands debian/control.base adding entries
+for cross compiled targets.
+
+=cut
+
+init();
+
+my $parser = new Parse::DebControl;
+
+my $cfile = "./debian/control.base";
+
+if(not -f $cfile) {
+    verbose_print("No $cfile");
+}
+
+my $control = $parser->parse_file($cfile, { useTieIxHash => 'true' });
+
+my @bdeps;
+my @targets = (".*");
+my $srcpkg = $control->[0]->{"Source"};
+my $rtemsname = "rtems-$srcpkg";  # X-Rtems-Name:
+my $rtemsdev = $control->[1]->{"Package"}; # X-Rtems-Dev:
+
+my %srcfields = %{$control->[0]};
+
+while (my ($k,$v) = each(%srcfields)) {
+    if(not defined @bdeps and $k =~ m/^(?:X[BCS]*-)?Rtems-Build-Depends$/ ) {
+        @bdeps = split(",",$v);
+        foreach my $bdep (@bdeps) {
+            chomp($bdep);
+        }
+    }
+
+    if($k =~ m/^(?:X[BCS]*-)?Epics-Targets/ ) {
+        @targets = split(/\s+/,$v);
+    }
+
+    if($k =~ m/^(?:X[BCS]*-)?Rtems-Name/ ) {
+        $rtemsname = "rtems-$v";
+    }
+
+    if($k =~ m/^(?:X[BCS]*-)?Rtems-Dev/ ) {
+        $rtemsdev = $v;
+    }
+}
+
+@targets = (".*") if(not defined @targets);
+
+@targets = epics_targets(0, @targets);
+
+if(defined @bdeps and not exists $control->[0]->{"Build-Depends"}) {
+    $control->[0]->Push("Build-Depends" => "");
+}
+
+my @rtemspkgs = ();
+
+foreach my $target (@targets) {
+    next unless($target =~ m/^RTEMS-(.*)/);
+    my $bsp=$1;
+
+    if(defined @bdeps) {
+        my @extradeps = ();
+        foreach my $bdep (@bdeps) {
+            unshift(@extradeps, "$bdep-$bsp,");
+        }
+
+        my $olddeps = $control->[0]->{"Build-Depends"};
+
+        my $newdeps = join(" ",@extradeps);
+
+        # add leading comma if needed
+        $newdeps=",$newdeps" unless($olddeps =~ m/.*,\s*$/s);
+
+        $control->[0]->{"Build-Depends"} = "$olddeps\n              $newdeps";
+    }
+
+    my $pkg = << "CONTROL";
+
+Package: ${rtemsname}-$bsp
+Architecture: all
+Depends: \${rtems:Depends}, $rtemsdev (= \${binary:Version})
+Description: $srcpkg for the $bsp BSP\n The $srcpkg compiled for the $bsp RTEMS BSP.
+CONTROL
+
+    push(@rtemspkgs, $pkg);
+}
+
+my $writer = new Parse::DebControl;
+
+$writer->DEBUG();
+
+$writer->write_file("debian/control", $control, 
+    { clobberFile => 'true' });
+
+open(CONT, ">>debian/control") || error("Can't append control");
+
+foreach my $pkg (@rtemspkgs) {
+    print CONT $pkg;
+}
+
+close(CONT);
