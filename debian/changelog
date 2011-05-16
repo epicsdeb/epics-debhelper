@@ -1,11 +1,20 @@
+epics-debhelper (7) unstable; urgency=low
+
+  * Install epics-debhelper(7) manpage
+  * Fix dh_epics_list_targets
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Mon, 16 May 2011 11:57:51 -0400
+
 epics-debhelper (6) unstable; urgency=low
 
   * Rename package to epics-debhelper
   * Add:
-     dh_installepics - Common shared library and RTEMS tasks
-     dh_list_epics_targets - Print lists of install EPICS
+     dh_epics_installlibs - Put host shared libraries in correct location
+     dh_rtems_install - Common RTEMS install tasks
+     dh_rtems_lintian - Default Lintian override list
+     dh_epics_list_targets - Print lists of install EPICS
        build targets.
-     dh ... --with epics - debhelper sequence (superset of rtems)
+     dh ... --with epics - debhelper sequence (superset of rtems sequence)
   * Changed:
      dh_rtems - Look for more control tags
 
