@@ -50,8 +50,8 @@ use warnings;
 use Debian::Debhelper::Dh_Lib;
 use Debian::Debhelper::Dh_Epics qw(setepicsenv);
 
-my $skiphost;
-my $neg;
+my $skiphost = 0;
+my $neg = 0;
 
 my %args;
 my %options = (
@@ -64,7 +64,8 @@ init(%args);
 
 setepicsenv();
 
-my @args = @{$dh{U_PARAMS}};
+my @args = ();
+@args = @{$dh{U_PARAMS}} if(defined @{$dh{U_PARAMS}});
 
 if($skiphost) {
     unshift(@args,"-^$ENV{EPICS_HOST_ARCH}\$");
@@ -78,6 +79,7 @@ foreach my $libdir (@dirs) {
 
     my $cont=($neg ? 0 : 1);
     foreach my $test (@args) {
+
         if( $test =~ m/^-(.*)/ ) {
             if( $targ =~ m/$1/) {
                 $cont = 0;
