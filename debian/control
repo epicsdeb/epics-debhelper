@@ -1,4 +1,4 @@
-Source: rtems-debhelper
+Source: epics-debhelper
 Section: devel
 Priority: optional
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
@@ -7,10 +7,13 @@ Build-Depends: debhelper (>= 7),
 Standards-Version: 3.8.0
 Homepage: http://pubweb.bnl.gov/~mdavidsaver
 
-Package: rtems-debhelper
+Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
          debhelper, libparse-debcontrol-perl,
-Description: Helper for building RTEMS packages
+Conflicts: rtems-debhelper
+Replaces: rtems-debhelper
+Provides: rtems-debhelper
+Description: Helper for building EPICS packages
  A helper script to calculate package dependencies
  for RTEMS packages.  Only needed when creating packages.

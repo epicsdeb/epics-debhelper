@@ -1,3 +1,16 @@
+epics-debhelper (6) unstable; urgency=low
+
+  * Rename package to epics-debhelper
+  * Add:
+     dh_installepics - Common shared library and RTEMS tasks
+     dh_list_epics_targets - Print lists of install EPICS
+       build targets.
+     dh ... --with epics - debhelper sequence (superset of rtems)
+  * Changed:
+     dh_rtems - Look for more control tags
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Sun, 15 May 2011 22:19:53 -0400
+
 rtems-debhelper (5) unstable; urgency=low
 
   * incorrectly matching version numbers when detecting (no)native packages
