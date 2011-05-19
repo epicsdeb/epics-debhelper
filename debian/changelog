@@ -1,3 +1,9 @@
+epics-debhelper (8.2) unstable; urgency=low
+
+  * Really correct debhelper dependency
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Thu, 19 May 2011 17:27:53 -0400
+
 epics-debhelper (8.1) unstable; urgency=low
 
   * correct debhelper dependency (>= 7.0.50~)

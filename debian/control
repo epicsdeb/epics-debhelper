@@ -10,7 +10,7 @@ Homepage: http://pubweb.bnl.gov/~mdavidsaver
 Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
-         debhelper, libparse-debcontrol-perl,
+         debhelper (>= 7.0.50~), libparse-debcontrol-perl,
 Conflicts: rtems-debhelper
 Replaces: rtems-debhelper
 Provides: rtems-debhelper
