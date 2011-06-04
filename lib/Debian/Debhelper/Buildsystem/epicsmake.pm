@@ -35,7 +35,7 @@ sub check_auto_buildable {
     return (-e $this->get_sourcepath("configure/RELEASE") ? 5 : 0);
 }
 
-sub setbuildenv {
+sub pre_building_step {
     my $this=shift;
 
     my $bindir = $this->get_sourcepath("bin/$ENV{EPICS_HOST_ARCH}");
@@ -46,42 +46,40 @@ sub setbuildenv {
     } else {
         $ENV{LD_LIBRARY_PATH} = "$ENV{PWD}/${libdir}:$ENV{LD_LIBRARY_PATH}";
     }
-    verbose_print("export PATH=$ENV{PATH}");
-    verbose_print("export LD_LIBRARY_PATHs=$ENV{LD_LIBRARY_PATH}");
-}
 
-sub makeargs {
-    my $this=shift;
-    my $sov=epics_sover();
-    my $targets=join(" ",get_targets());
-    unshift(@_, ("USE_RPATH=NO", "SHRLIB_VERSION=${sov}",
-            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
-            "CROSS_COMPILER_TARGET_ARCHS=$targets"));
-    return @_;
+    $this->SUPER::pre_building_step(@_);
 }
 
 sub do_make {
     my $this=shift;
-    $this->setbuildenv();
-    $this->SUPER::do_make($this->makeargs(@_));
+    my $sov=epics_sover();
+    my $targets=join(" ",get_targets());
+
+    verbose_print("export PATH=$ENV{PATH}");
+    verbose_print("export LD_LIBRARY_PATHs=$ENV{LD_LIBRARY_PATH}");
+
+    unshift(@_, ("USE_RPATH=NO", "SHRLIB_VERSION=${sov}",
+            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
+            "CROSS_COMPILER_TARGET_ARCHS=$targets"));
+    $this->SUPER::do_make(@_);
 }
 
 sub test {
     my $this=shift;
-    $this->make_first_existing_target(['runtests'], @_);
+    $this->do_make('runtests', @_);
 }
 
 sub install {
     my $this=shift;
     my $destdir=shift;
 
-    $this->make_first_existing_target(['install'],
+    $this->do_make('install',
         "INSTALL_LOCATION=$destdir/$ENV{EPICS_BASE}", @_);
 }
 
 sub clean {
     my $this=shift;
-    $this->make_first_existing_target(['distclean', 'realclean', 'clean'], @_);
+    $this->do_make('distclean', @_);
 }
 
 1
