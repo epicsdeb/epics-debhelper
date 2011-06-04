@@ -1,3 +1,10 @@
+epics-debhelper (8.3) unstable; urgency=low
+
+  * dh_strip_rtems: also avoid stripping debug
+  * dh --with epicsmake: problems with make_first_existing_target
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Sat, 04 Jun 2011 19:17:15 -0400
+
 epics-debhelper (8.2) unstable; urgency=low
 
   * Really correct debhelper dependency
