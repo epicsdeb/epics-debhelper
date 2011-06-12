@@ -11,7 +11,7 @@ use vars qw(@ISA @EXPORT);
 @ISA=qw(Exporter);
 @EXPORT=qw(&setepicsenv &epics_sover &get_targets &epics_targets);
 
-use Debian::Debhelper::Dh_Lib qw(basename verbose_print getpackages);
+use Debian::Debhelper::Dh_Lib qw(basename verbose_print getpackages %dh);
 
 sub setepicsenv {
     if (not exists $ENV{EPICS_BASE}) {
@@ -53,7 +53,7 @@ sub get_targets {
         push(@targets,"$ENV{EPICS_HOST_ARCH}-debug");
     }
 
-    foreach my $pkg (getpackages()) {
+    foreach my $pkg (@{$dh{DOPACKAGES}}) {
         if ($pkg =~ m/^rtems-.+-([^-]+)$/) {
             push(@targets, "RTEMS-$1");
         }
