@@ -11,9 +11,17 @@ Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
          debhelper (>= 7.0.50~), libparse-debcontrol-perl,
-Conflicts: rtems-debhelper
-Replaces: rtems-debhelper
-Provides: rtems-debhelper
+Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
  A helper script to calculate package dependencies
  for RTEMS packages.  Only needed when creating packages.
+
+Package: rtems-debhelper
+Architecture: all
+Depends: epics-debhelper (= ${source:Version})
+Description: Helper for building EPICS packages
+ A helper script to calculate package dependencies
+ for RTEMS packages.  Only needed when creating packages.
+ .
+ This package exists during transition from
+ rtems-debhelper to epics-debhelper
