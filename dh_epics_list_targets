@@ -61,6 +61,7 @@ my %options = (
 $args{options}{$_} = $options{$_} foreach keys(%options);
 
 init(%args);
+inhibit_locg();
 
 setepicsenv();
 
