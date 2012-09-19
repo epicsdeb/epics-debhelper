@@ -1,3 +1,9 @@
+epics-debhelper (8.6) unstable; urgency=low
+
+  * no relative paths in PATH and LD_LIBRARY_PATH
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Wed, 19 Sep 2012 14:05:43 -0400
+
 epics-debhelper (8.5) unstable; urgency=low
 
   * Fix broken install...
