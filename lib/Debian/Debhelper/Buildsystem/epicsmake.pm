@@ -38,13 +38,14 @@ sub check_auto_buildable {
 sub pre_building_step {
     my $this=shift;
 
+    my $pwd    = abs_path($ENV{PWD});
     my $bindir = $this->get_sourcepath("bin/$ENV{EPICS_HOST_ARCH}");
     my $libdir = $this->get_sourcepath("lib/$ENV{EPICS_HOST_ARCH}");
-    $ENV{PATH} = "$ENV{PWD}/${bindir}:$ENV{PATH}";
+    $ENV{PATH} = "${pwd}/${bindir}:$ENV{PATH}";
     if( not exists $ENV{LD_LIBRARY_PATH} ) {
-        $ENV{LD_LIBRARY_PATH} = "$ENV{PWD}/${libdir}";
+        $ENV{LD_LIBRARY_PATH} = "${pwd}/${libdir}";
     } else {
-        $ENV{LD_LIBRARY_PATH} = "$ENV{PWD}/${libdir}:$ENV{LD_LIBRARY_PATH}";
+        $ENV{LD_LIBRARY_PATH} = "${pwd}/${libdir}:$ENV{LD_LIBRARY_PATH}";
     }
 
     $this->SUPER::pre_building_step(@_);
@@ -56,7 +57,7 @@ sub do_make {
     my $targets=join(" ",get_targets());
 
     verbose_print("export PATH=$ENV{PATH}");
-    verbose_print("export LD_LIBRARY_PATHs=$ENV{LD_LIBRARY_PATH}");
+    verbose_print("export LD_LIBRARY_PATH=$ENV{LD_LIBRARY_PATH}");
 
     unshift(@_, ("USE_RPATH=NO", "SHRLIB_VERSION=${sov}",
             "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
