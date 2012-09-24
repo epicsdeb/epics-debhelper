@@ -1,3 +1,10 @@
+epics-debhelper (8.7) unstable; urgency=low
+
+  * typo in dh_epics_list_targets
+  * add dh_epicsdep
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Mon, 24 Sep 2012 18:35:45 -0400
+
 epics-debhelper (8.6) unstable; urgency=low
 
   * no relative paths in PATH and LD_LIBRARY_PATH
