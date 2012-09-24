@@ -1,0 +1,78 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_epicsdep - Generate EPICS dependency information
+
+=cut
+
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Parse::DebControl;
+
+=head1 SYNOPSIS
+
+B<dh_epicsdep> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+This utility provides the substituion variable epics:Depends.
+It add a versioned dependency to epics-dev to all *-dev
+packages which should match the libepics* dependency.
+
+=cut
+
+init();
+
+my $depinfo = `dpkg --print-avail epics-dev`;
+# The following requires perl >= 5.10
+if( ${^CHILD_ERROR_NATIVE} != 0 ) {
+	die "Package name epics-dev not installed";
+}
+
+my $parser = new Parse::DebControl;
+
+my $control = $parser->parse_mem($depinfo, { useTieIxHash => 'true' });
+
+my $ver = $control->[0]->{"Version"};
+$ver = "3.14.12.2-3.1";
+
+# remove deb revision
+$ver =~ s/-[^-]+$//;
+
+verbose_print("epics $ver\n");
+
+# if epics base version is a patch release
+if( $ver =~ m/\d+\.\d+\.\d+\.\d+$/m ) {
+	# remove patch number
+	$ver =~ s/\.\d+$//;
+}
+
+verbose_print("Adding dependency to epics $ver\n");
+
+foreach my $pkg(getpackages()) {
+	verbose_print("Package: $pkg\n");
+	
+	# Skip packages not named '*-dev'
+	if( $pkg !~ /-dev$/) {
+		next;
+	}
+
+	# this range should encompass all patch releases of the series
+	addsubstvar($pkg, "epics:Depends", "epics-dev", ">= ${ver}~");
+	addsubstvar($pkg, "epics:Depends", "epics-dev", "<= ${ver}.+");
+}
+
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@bnl.gov>
+
+=cut

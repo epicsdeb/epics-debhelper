@@ -14,6 +14,8 @@ insert_after("dh_perl", "dh_rtems");
 insert_before("dh_strip", "dh_strip_rtems");
 remove_command("dh_strip");
 
+insert_after("dh_shlibdeps", "dh_epicsdep");
+
 insert_before("dh_lintian", "dh_rtems_lintian");
 
 1
