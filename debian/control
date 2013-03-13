@@ -3,7 +3,7 @@ Section: devel
 Priority: optional
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Build-Depends: debhelper (>= 7.0.50~),
-               perl (>= 5.10.0)
+               perl (>= 5.10.0),
 Standards-Version: 3.8.0
 Homepage: http://pubweb.bnl.gov/~mdavidsaver
 
@@ -11,6 +11,7 @@ Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
          debhelper (>= 7.0.50~), libparse-debcontrol-perl,
+         libtie-ixhash-perl,
 Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
  A helper script to calculate package dependencies
