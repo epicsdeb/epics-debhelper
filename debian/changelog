@@ -1,3 +1,9 @@
+epics-debhelper (8.9) unstable; urgency=low
+
+  * Add depends on libtie-ixhash-perl
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Wed, 13 Mar 2013 17:54:47 -0400
+
 epics-debhelper (8.8) unstable; urgency=low
 
   * forgot to remove testing code from dh_epicsdep
