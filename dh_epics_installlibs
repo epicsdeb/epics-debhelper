@@ -12,6 +12,7 @@ B<dh_epics_installlibs> [S<I<debhelper options>>]
 
 Looks for shared libraries in debian/tmp/${EPICSBASE}/lib/${EPICS_HOST_ARCH}/.
 Moves any shared libraries with SO names found to debian/tmp/usr/lib/
+(or debian/tmp/usr/lib/<triplet>/ when using Multi-Arch)
 and adjusts symlinks in the original directory.
 
 This allows binaries linked against libXYZ.so.# to find it in the
@@ -22,6 +23,10 @@ the search path.
 The intent of this process is to prevent accidentally linking
 against the wrong copy/version of a library.
 
+Switching to the new Multi-Arch locations is controlled by
+the debhelper compat level in debian/compat:
+level 9 and up will use the new Multi-Arch locations.
+
 =cut
 
 use strict;
@@ -31,15 +36,23 @@ use Debian::Debhelper::Dh_Epics qw(setepicsenv);
 
 init();
 
-setepicsenv();
+my $multiarch=dpkg_architecture_value("DEB_HOST_MULTIARCH");
 
-# first move host libraries
+my $slashtriplet="";
+
+if (! compat(8)) {
+    if (defined $multiarch && $multiarch ne '') {
+        $slashtriplet="/$multiarch";
+    }
+}
+
+setepicsenv();
 
 # collect host libraries with SO names
 my @libs = glob("debian/tmp/$ENV{EPICS_BASE}/lib/$ENV{EPICS_HOST_ARCH}/lib*.so.*");
 
 if( @libs > 0) {
-    doit("install","-m","755","-d","debian/tmp/usr/lib");        
+    doit("install","-m","755","-d","debian/tmp/usr/lib$slashtriplet");
 }
 
 foreach my $lib (@libs) {
@@ -51,9 +64,9 @@ foreach my $lib (@libs) {
         warning("Warning: Not a symlink:  $edir/$base");
     }
 
-    doit("mv",$lib,"debian/tmp/usr/lib/$lname");
+    doit("mv",$lib,"debian/tmp/usr/lib$slashtriplet/$lname");
     doit("rm","-f","$edir/$base");
-    doit("ln","-s","../../../$lname","$edir/$base");
+    doit("ln","-s","../../..$slashtriplet/$lname","$edir/$base");
 }
 
 

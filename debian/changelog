@@ -1,3 +1,17 @@
+epics-debhelper (8.10) unstable; urgency=low
+
+  * Add support for Multi-Arch shared library locations in dh_epics_installlibs
+  * debian/control: add Ralph to uploaders
+  * Fix numerous lintian warnings
+      debian/control: improve Description fields
+      debian/copyright: make GPL version explicit
+      debian/rules: add new mandatory build-arch and build-indep targets
+      debian/source/format: added
+      debian/control: bump Standards-Version to 3.9.4
+      dh_rtems_lintian: fix typo
+
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Wed, 25 Sep 2013 17:28:21 +0200
+
 epics-debhelper (8.9) unstable; urgency=low
 
   * Add depends on libtie-ixhash-perl
