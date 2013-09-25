@@ -2,9 +2,10 @@ Source: epics-debhelper
 Section: devel
 Priority: optional
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
+Uploaders: Ralph Lange <Ralph.Lange@gmx.de>
 Build-Depends: debhelper (>= 7.0.50~),
                perl (>= 5.10.0),
-Standards-Version: 3.8.0
+Standards-Version: 3.9.4
 Homepage: http://pubweb.bnl.gov/~mdavidsaver
 
 Package: epics-debhelper
@@ -14,15 +15,17 @@ Depends: ${perl:Depends}, perl (>= 5.10.0),
          libtie-ixhash-perl,
 Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
- A helper script to calculate package dependencies
- for RTEMS packages.  Only needed when creating packages.
+ A collection of programs that can be used in a debian/rules file to
+ automate common tasks related to building EPICS Debian packages.
+ These tools integrate with the debhelper collection.
+ Only needed when creating packages.
 
 Package: rtems-debhelper
 Architecture: all
 Depends: epics-debhelper (= ${source:Version})
-Description: Helper for building EPICS packages
+Description: Helper for building EPICS packages (transitional package)
  A helper script to calculate package dependencies
  for RTEMS packages.  Only needed when creating packages.
  .
- This package exists during transition from
- rtems-debhelper to epics-debhelper
+ This is a transitional dependency package to help with the
+ transition from rtems-debhelper to epics-debhelper.

@@ -8,7 +8,10 @@ install: build
 binary-arch binary-indep: install
 binary: binary-arch binary-indep
 
-build: build-stamp
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
 build-stamp:
 	dh build --until auto_build
 

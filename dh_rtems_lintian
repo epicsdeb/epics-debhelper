@@ -32,7 +32,7 @@ can only be statically linked.
 
 =item unstripped-binary-or-object
 
-Splitting the debug symbols into a seperate file (in /usr/lib/debug)
+Splitting the debug symbols into a separate file (in /usr/lib/debug)
 isn't possible for static libraries.  Therefore binaries are left unstripped.
 
 =back
