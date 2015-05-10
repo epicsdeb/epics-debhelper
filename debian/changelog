@@ -1,3 +1,11 @@
+epics-debhelper (8.11) unstable; urgency=medium
+
+  * dh_rtems: dpkg --print-avail may sometimes incorrectly report
+     a package as uninstalled.  Use dpkg-query instead.
+  * Add dh_rtems_lintian to rtems dh sequence.
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Sun, 10 May 2015 13:52:02 -0400
+
 epics-debhelper (8.10) unstable; urgency=low
 
   * Add support for Multi-Arch shared library locations in dh_epics_installlibs

@@ -66,23 +66,19 @@ foreach my $pkg(getpackages()) {
 
 	my ($mod, $bsp) = ($pkg =~ /^rtems-(.+)-([^-]+)$/);
 
-	my $rdep;
+	# for each listed dependency
 	foreach my $rdep (@rdeps) {
 		$rdep =~ s/^\s+//;
 		$rdep =~ s/\s+$//;
 
-		# get control infor for depended package
-		my $depinfo = `dpkg --print-avail $rdep-$bsp`;
+		# Find version of <module>--<bspname> (eg. rtems-mvme3100 or rtems-cexp-mvme3100)
+		my $ver = `dpkg-query -W --showformat='\${Version}' $rdep-$bsp`;
+
 		# The following requires perl >= 5.10
 		if( ${^CHILD_ERROR_NATIVE} != 0 ) {
 			warning("Package name $rdep-$bsp not installed");
 			next;
 		}
-
-		my $control = $parser->parse_mem($depinfo, { useTieIxHash => 'true' });
-
-		# Note: there will be only one section
-		my $ver = $control->[0]->{"Version"};
 
 		# construct condition for direct dependency
 		if( $ver =~ m/^(.*)-[^-]*$/m ) {
@@ -98,9 +94,11 @@ foreach my $pkg(getpackages()) {
 			addsubstvar($pkg, "rtems:Depends", "$rdep-$bsp", "<= ${ver}++");
 		}
 
+		my $depends = `dpkg-query -W --showformat='\${Depends}\n' $rdep-$bsp`;
+
 		# copy conditions for indirect dependencies
-		if(exists $control->[0]->{"Depends"}) {
-			my @deps = split(",", $control->[0]->{"Depends"});
+		if(length $depends) {
+			my @deps = split(",", $depends);
 			my @res = ();
 			for my $dep (@deps) {
 				# only those involving bsp specific packages

@@ -9,4 +9,6 @@ insert_after("dh_perl", "dh_rtems");
 insert_before("dh_strip", "dh_strip_rtems");
 remove_command("dh_strip");
 
+insert_before("dh_lintian", "dh_rtems_lintian");
+
 1
