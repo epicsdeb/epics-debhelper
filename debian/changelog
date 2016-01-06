@@ -1,3 +1,12 @@
+epics-debhelper (8.12) unstable; urgency=medium
+
+  * Use LINKER_USE_RPATH instead of USE_RPATH
+  * Update package maintainer, uploaders
+  * Bump up package standards version to 3.9.6
+  * Add ${misc:Depends} to dependencies
+
+ -- Martin Konrad <konrad@frib.msu.edu>  Wed, 06 Jan 2016 15:05:16 -0800
+
 epics-debhelper (8.11) unstable; urgency=medium
 
   * dh_rtems: dpkg --print-avail may sometimes incorrectly report
