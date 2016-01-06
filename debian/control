@@ -12,7 +12,7 @@ Homepage: http://pubweb.bnl.gov/~mdavidsaver
 Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
-         debhelper (>= 7.0.50~), libparse-debcontrol-perl,
+         ${misc:Depends}, debhelper (>= 7.0.50~), libparse-debcontrol-perl,
          libtie-ixhash-perl,
 Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
@@ -23,7 +23,7 @@ Description: Helper for building EPICS packages
 
 Package: rtems-debhelper
 Architecture: all
-Depends: epics-debhelper (= ${source:Version})
+Depends: ${misc:Depends}, epics-debhelper (= ${source:Version})
 Description: Helper for building EPICS packages (transitional package)
  A helper script to calculate package dependencies
  for RTEMS packages.  Only needed when creating packages.
