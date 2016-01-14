@@ -25,17 +25,11 @@ packages which should match the libepics* dependency.
 
 init();
 
-my $depinfo = `dpkg --print-avail epics-dev`;
+my $ver = `dpkg-query --show --showformat='\${Version}' epics-dev`;
 # The following requires perl >= 5.10
 if( ${^CHILD_ERROR_NATIVE} != 0 ) {
 	die "Package name epics-dev not installed";
 }
-
-my $parser = new Parse::DebControl;
-
-my $control = $parser->parse_mem($depinfo, { useTieIxHash => 'true' });
-
-my $ver = $control->[0]->{"Version"};
 
 # remove deb revision
 $ver =~ s/-[^-]+$//;
