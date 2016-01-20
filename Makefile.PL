@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile (
     NAME    => 'Debian::Debhelper::Dh_Epics',
     VERSION => "1.0",
-    AUTHOR  => 'Michael Davidsaver <mdavidsaver@bnl.gov',
+    AUTHOR  => 'Michael Davidsaver <mdavidsaver@gmail.com>',
     ABSTRACT => 'Debhelpers for EPICS build system',
     PREREQ_PM => { 'Debian::Debhelper' => 0 },
     EXE_FILES => [ qw(dh_rtems dh_strip_rtems ),
