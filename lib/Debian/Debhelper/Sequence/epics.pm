@@ -6,7 +6,7 @@ use Debian::Debhelper::Dh_Lib;
 
 insert_before("dh_install", "dh_epics_installlibs");
 
-insert_after("dh_install", "dh_rtems_install");
+insert_before("dh_install", "dh_rtems_install");
 
 insert_after("dh_perl", "dh_rtems");
 

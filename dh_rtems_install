@@ -46,7 +46,7 @@ foreach my $pkg (getpackages()) {
 
             doit("install","-d","debian/$pkg/$ENV{EPICS_BASE}/$part");
 
-            doit("cp","-r","debian/tmp/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}",
+            doit("mv","debian/tmp/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}",
                         "debian/$pkg/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}");
 
             my @bins = glob("debian/$pkg/$ENV{EPICS_BASE}/$part/RTEMS-${bsp}/*");
