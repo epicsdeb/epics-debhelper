@@ -1,9 +1,9 @@
-epics-debhelper (8.13) UNRELEASED; urgency=medium
+epics-debhelper (8.13) unstable; urgency=medium
 
   * move dh_rtems_install before dh_install in --with epics sequence
     and change 'cp' to 'mv' to avoid error w/ --fail-missing
 
- -- Michael Davidsaver <mdavidsaver@gmail.com>  Tue, 19 Jan 2016 22:53:03 -0500
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 20 Jan 2016 11:12:52 -0500
 
 epics-debhelper (8.12) unstable; urgency=medium
 
