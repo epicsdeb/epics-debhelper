@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_epics_postinstall - Cleanup EPICS module after 'make install'
+
+=head1 SYNOPSIS
+
+B<dh_epics_postinstall> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+Run after dh_auto_install and before dh_install.
+Removes configure/RELEASE and similar, which are
+sometimes installed by the EPICS makefiles,
+but which should only be packaged with epics-base
+itself.
+
+=cut
+
+use strict;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv);
+
+init();
+setepicsenv();
+
+for my $file("RELEASE","CONFIG","CONFIG_SITE","CONFIG_APP") {
+    if(-e "debian/tmp/$ENV{EPICS_BASE}/configure/$file") {
+        doit("rm", "debian/tmp/$ENV{EPICS_BASE}/configure/$file");
+    }
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@gmail.com>
+
+=cut

@@ -11,6 +11,6 @@ WriteMakefile (
     EXE_FILES => [ qw(dh_rtems dh_strip_rtems ),
                    qw(dh_rtems_install dh_rtems_lintian),
                    qw(dh_epics_list_targets dh_epics_installlibs),
-                   qw(dh_epicsdep),
+                   qw(dh_epicsdep dh_epics_postinstall),
                  ],
 );

@@ -4,6 +4,8 @@ use warnings;
 use strict;
 use Debian::Debhelper::Dh_Lib;
 
+insert_after("dh_auto_install", "dh_epics_postinstall");
+
 insert_before("dh_install", "dh_epics_installlibs");
 
 insert_before("dh_install", "dh_rtems_install");
