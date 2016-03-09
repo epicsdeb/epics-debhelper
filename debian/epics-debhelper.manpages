@@ -1,6 +1,2 @@
 epics-debhelper.7
-debian/tmp/usr/share/man/man1/dh_epics_installlibs.1p
-debian/tmp/usr/share/man/man1/dh_epics_list_targets.1p
-debian/tmp/usr/share/man/man1/dh_rtems.1p
-debian/tmp/usr/share/man/man1/dh_rtems_install.1p
-debian/tmp/usr/share/man/man1/dh_rtems_lintian.1p
+debian/tmp/usr/share/man/man1/dh_*.1p
