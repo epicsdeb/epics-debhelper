@@ -9,7 +9,7 @@ WriteMakefile (
     ABSTRACT => 'Debhelpers for EPICS build system',
     PREREQ_PM => { 'Debian::Debhelper' => 0 },
     EXE_FILES => [ qw(dh_rtems dh_strip_rtems ),
-                   qw(dh_rtems_install dh_rtems_lintian),
+                   qw(dh_epics_install dh_rtems_lintian),
                    qw(dh_epics_list_targets dh_epics_installlibs),
                    qw(dh_epicsdep dh_epics_postinstall),
                  ],

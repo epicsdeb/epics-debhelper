@@ -1,0 +1,114 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_epics_install - Install EPICS module files in standard locations
+
+=head1 SYNOPSIS
+
+B<dh_epics_install> [S<I<debhelper options>>]
+
+=head1 DESCRIPTION
+
+B<dh_epics_install> is an alternative to writing debian/*.install files.
+For binary packages which provide debian/<name>.install this script
+takes no action.
+
+B<dh_epics_install> should be run before B<dh_install>.
+
+The actions taken by this script depend on the binary package name.
+
+For names of the form '*-dev' host binaries,
+headers are installed as ${EPICS_BASE}/include/os/RTEMS
+
+For names of the form 'rtems-<module>-<bsp>' (target) executables
+and static libraries are installed as
+${EPICS_BASE}/lib/RTEMS-<bsp>/ and ${EPICS_BASE}/bin/RTEMS-<bsp>/
+
+Install files from these locations into the appropriate package.
+Package name is used to determine which EPICS target name is copied.
+The package rtems-...-mvme3100 will install the target RTEMS-mvme3100.
+
+If an install file debian/packagename.install is provided then this
+utility does nothing for that package.
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv epics_sover);
+
+init();
+
+setepicsenv();
+
+# relocate some files from from the tmp install location
+# to a specific binary package.
+# argument is a glob string to match files under debian/tmp
+sub installme {
+    my $pkg = shift;
+    my $pattern = shift;
+
+    foreach my $src(glob("debian/tmp/$pattern")) {
+        # note that -e follows symlinks, so if the file being linked has
+        # already been moved it is false.  So assume all symlinks are
+        # correct and move them
+        next unless(-e $src || -l $src);
+        my $dst = $src =~ s|^debian/tmp|debian/$pkg|r;
+        my $ddir = dirname($dst);
+        doit("install","-d",$ddir) unless (-d $ddir);
+        doit("mv",$src,$dst);
+    }
+}
+
+foreach my $pkg (getpackages()) {
+    # skip when install list already provided
+    next if(-f "debian/$pkg.install");
+    next if($pkg =~ m/-dbg$/);
+
+    if($pkg =~ m/^rtems-(.+)-([^-]+)$/) {
+        my $srcname = $1;
+        my $bsp = $2;
+        verbose_print("$pkg EPICS RTEMS package for $bsp\n");
+
+        installme($pkg, "$ENV{EPICS_BASE}/bin/RTEMS-${bsp}");
+        installme($pkg, "$ENV{EPICS_BASE}/lib/RTEMS-${bsp}");
+
+        # RTEMS binaries are not executable on the host
+        foreach my $file(glob("debian/$pkg/$ENV{EPICS_BASE}/*/RTEMS-${bsp}/*")) {
+            doit("chmod","a-x",$file) if(-x $file);
+        }
+
+    }elsif($pkg =~ m/-dev$/) {
+        verbose_print("$pkg EPICS devel package\n");
+
+        installme($pkg, "$ENV{EPICS_BASE}/bin/linux-*");
+        installme($pkg, "$ENV{EPICS_BASE}/lib/linux-*-debug/lib*.so.*");
+        installme($pkg, "$ENV{EPICS_BASE}/lib/linux-*/lib*.so");
+        installme($pkg, "$ENV{EPICS_BASE}/lib/linux-*/lib*.a");
+        installme($pkg, "$ENV{EPICS_BASE}/include");
+        installme($pkg, "$ENV{EPICS_BASE}/dbd");
+        installme($pkg, "$ENV{EPICS_BASE}/db");
+        installme($pkg, "$ENV{EPICS_BASE}/templates");
+
+    }elsif($pkg =~ m/^lib/) {
+        verbose_print("$pkg EPICS runtime library package\n");
+        my $hostarch = dpkg_architecture_value("DEB_HOST_MULTIARCH");
+
+        installme($pkg, "/usr/lib/lib*.so.*");
+        installme($pkg, "/usr/lib/$hostarch/lib*.so.*");
+    }
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@gmail.com>
+
+=cut
