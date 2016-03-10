@@ -56,6 +56,10 @@ sub get_targets {
     foreach my $pkg (@{$dh{DOPACKAGES}}) {
         if ($pkg =~ m/^rtems-.+-([^-]+)$/) {
             push(@targets, "RTEMS-$1");
+        } elsif ($pkg =~ m/-win32$/) {
+            push(@targets, "win32-x86-mingw");
+        } elsif ($pkg =~ m/-win64$/) {
+            push(@targets, "windows-x64-mingw");
         }
     }
     return @targets;
