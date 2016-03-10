@@ -23,7 +23,7 @@ remove_command("dh_strip");
 # inject epics-dev dep for *-dev to match libepics* dep in lib*
 insert_after("dh_shlibdeps", "dh_epicsdep");
 
-# auto-create lintian overrides for rtems packages
-insert_before("dh_lintian", "dh_rtems_lintian");
+# auto-create lintian overrides for epics module packages
+insert_before("dh_lintian", "dh_epics_lintian");
 
 1

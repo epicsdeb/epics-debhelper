@@ -1,0 +1,129 @@
+#!/usr/bin/perl
+
+=head1 NAME
+
+dh_epics_lintian - Install standard overrides for EPICS packages
+
+=head1 SYNOPSIS
+
+B<dh_epics_lintian> [S<I<debhelper options> >]
+
+=head1 DESCRIPTION
+
+The Lintian utility produces several false positives for
+all EPICS module packages.  This utility installs a standard overrides file
+if not debian/packagename.lintian-overrides is provided.
+
+The current list of overrides is:
+
+=over 3
+
+=item arch-independent-package-contains-binary-or-object
+
+RTEMS packages can be marked "Architecture: all" as they should contain
+no host binaries.  Target binaries produced by a cross-compiler
+do not depend on the host architecture.
+
+=item statically-linked-binary
+
+While RTEMS uses the ELF format for executables and object files, it
+does not support shared libraries.  Therefore executables
+can only be statically linked.
+
+=item unstripped-binary-or-object
+
+RTEMS packages contain only static libraries, which don't support split debug.
+Therefore binaries are left unstripped to allow the end user the option to debug.
+
+For *-dev packages, won't strip for *-debug targets unless
+a *-dbg package is also being produced.
+
+=back
+
+=cut
+
+use strict;
+use warnings;
+use Debian::Debhelper::Dh_Lib;
+use Debian::Debhelper::Dh_Epics qw(setepicsenv);
+
+init();
+
+setepicsenv();
+
+# Are we building any *-dbg package?
+my $hasdbg = 0;
+
+foreach my $pkg (getpackages()) {
+    $hasdbg = 1 if($pkg =~ m/-dbg$/);
+}
+verbose_print("Building -dbg") if($hasdbg);
+verbose_print("Not building -dbg") unless($hasdbg);
+
+foreach my $pkg (getpackages()) {
+    # skip if overrides provided explicitly
+    next if(-f "debian/$pkg.lintian-overrides" or 
+            -f "debian/$pkg/usr/share/lintian/overrides/$pkg");
+    next if($pkg =~ m/-dbg$/);
+
+    my $overrides;
+
+    if($pkg =~ m/^rtems-.+-[^-]+$/) {
+
+        $overrides = << "OVERRIDE";
+# Target binaries are independent of the host
+$pkg: arch-independent-package-contains-binary-or-object
+# Everything RTEMS is statically linked
+$pkg: statically-linked-binary
+# static linking means no split debug for libraries
+# so leave stripping to end user
+$pkg: unstripped-binary-or-object
+OVERRIDE
+
+    } elsif($pkg =~ m/-dev$/ and !$hasdbg) {
+        my $comment = 0;
+        foreach my $file(glob("debian/$pkg/$ENV{EPICS_BASE}/*/linux-*/*")) {
+            $file =~ s|debian/$pkg/+||;
+            if(!$comment) {
+                $comment = 1;
+                $overrides = $overrides . "# No stripping for *-debug targets unless -dbg package is created\n";
+            }
+            $overrides = $overrides . "$pkg: unstripped-binary-or-object $file\n";
+        }
+    } elsif($pkg =~ m/^lib/) {
+        $overrides = << "OVERRIDE";
+# To prevent accidental linking, but avoid the need for rpath.
+# For host non-debug targets place the library w/ SONAME
+# as eg. "/usr/lib/libmine.so.1" and place the
+# symlink w/o SONAME "in /usr/lib/epics/lib/\$EPICS_HOST_ARCH/libmine.so"
+$pkg: dev-pkg-without-shlib-symlink
+OVERRIDE
+    }
+
+    next unless($overrides);
+
+    verbose_print("Overrides for $pkg");
+    verbose_print($overrides);
+
+    doit("install","-d","debian/$pkg/usr/share/lintian/overrides")
+        if(! -d "debian/$pkg/usr/share/lintian/overrides");
+
+    next if($dh{NO_ACT});
+
+    open(my $over, '>', "debian/$pkg/usr/share/lintian/overrides/$pkg") || 
+            error("failed to write override");
+    print {$over} $overrides;
+    close($over);    
+}
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@gmail.com>
+
+=cut
