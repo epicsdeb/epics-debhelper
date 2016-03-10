@@ -23,6 +23,8 @@ Description: Helper for building EPICS packages
 
 Package: rtems-debhelper
 Architecture: all
+Section: oldlibs
+Priority: extra
 Depends: ${misc:Depends}, epics-debhelper (= ${source:Version})
 Description: Helper for building EPICS packages (transitional package)
  A helper script to calculate package dependencies
