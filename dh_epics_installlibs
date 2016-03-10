@@ -10,14 +10,14 @@ B<dh_epics_installlibs> [S<I<debhelper options>>]
 
 =head1 DESCRIPTION
 
-Looks for shared libraries in debian/tmp/${EPICSBASE}/lib/${EPICS_HOST_ARCH}/.
+Looks for shared libraries in debian/tmp/${EPICS_BASE}/lib/${EPICS_HOST_ARCH}/.
 Moves any shared libraries with SO names found to debian/tmp/usr/lib/
 (or debian/tmp/usr/lib/<triplet>/ when using Multi-Arch)
 and adjusts symlinks in the original directory.
 
 This allows binaries linked against libXYZ.so.# to find it in the
 default search path when run.  At the same time new binaries being
-linked must explicitly add ${EPICSBASE}/lib/<targetname>/ to
+linked must explicitly add ${EPICS_BASE}/lib/<targetname>/ to
 the search path.
 
 The intent of this process is to prevent accidentally linking

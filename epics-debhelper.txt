@@ -4,11 +4,23 @@ epics-debhelper - Debhelper for EPICS build system
 
 =head1 SYNOPSIS
 
-dh ... -Sepicsmake
+dh ... --with epics -Sepicsmake
 
-dh_list_epics_targets
+dh_epicsdep
 
-dh_fixepicslibs
+dh_epics_gencontrol
+
+dh_epics_install
+
+dh_epics_installlibs
+
+dh_epics_lintian
+
+dh_epics_list_targets
+
+dh_epics_postinstall
+
+dh_makeshlibs_epics
 
 dh_rtems
 
@@ -44,6 +56,11 @@ select.
 
 Location of EPICS environment.  If unset the default
 is used.
+
+=item CROSS_COMPILER_TARGET_ARCHS
+
+List of EPICS targets for cross compilation.
+Automatically populated based on debian/control if unset.
 
 =back
 
