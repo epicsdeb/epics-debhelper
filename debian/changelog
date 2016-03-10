@@ -1,3 +1,15 @@
+epics-debhelper (8.14) UNRELEASED; urgency=medium
+
+  * Add dh_epics_postinstall to auto remove
+    configure/RELEASE and similar which should not
+    be installed except by epics-base.
+  * Expand dh_rtems_install as dh_epics_install
+    Automatically install lib* and *-dev packages
+    when corresponding .install is missing.
+  * Install missing manpage for dh_epicsdep
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 09 Mar 2016 16:41:08 -0500
+
 epics-debhelper (8.13) unstable; urgency=medium
 
   * move dh_rtems_install before dh_install in --with epics sequence
