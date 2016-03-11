@@ -1,4 +1,18 @@
 #!/bin/sh
 set -e
 
-exec dh_makeshlibs "$@" -Xdebug
+# For epics modules, shared libraries w/ soname
+# should only be found in
+# lib* packages under /usr/lib/lib*.so.*
+# or *-dev packages ${EPICS_BASE}/lib/linux-*-debug/lib*.so.*
+# For *-dev packages avoid postinit call to ldconfig
+# to as per lintian postinst-has-useless-call-to-ldconfig
+for pkg in `dh_listpackages "$@"`
+do
+  case "$pkg" in
+  lib*-dbg) ;;
+  lib*) dh_makeshlibs -p$pkg "$@";;
+  *-dev) dh_makeshlibs -p$pkg -n "$@";;
+  *) ;;
+  esac
+done

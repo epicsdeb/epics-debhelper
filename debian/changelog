@@ -1,3 +1,10 @@
+epics-debhelper (8.15) unstable; urgency=medium
+
+  * Fix dh_makeshlibs_epics not creating shlibs for *-dev.
+    Attempt to fix lintian warning introduced bug...
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Fri, 11 Mar 2016 10:36:52 -0500
+
 epics-debhelper (8.14) unstable; urgency=medium
 
   * Add dh_epics_postinstall to auto remove
