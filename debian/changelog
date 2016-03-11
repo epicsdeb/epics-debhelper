@@ -1,4 +1,4 @@
-epics-debhelper (8.14) UNRELEASED; urgency=medium
+epics-debhelper (8.14) unstable; urgency=medium
 
   * Add dh_epics_postinstall to auto remove
     configure/RELEASE and similar which should not
@@ -12,7 +12,7 @@ epics-debhelper (8.14) UNRELEASED; urgency=medium
     file exists.
   * Install missing manpage for dh_epicsdep
 
- -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 09 Mar 2016 16:41:08 -0500
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Fri, 11 Mar 2016 10:34:26 -0500
 
 epics-debhelper (8.13) unstable; urgency=medium
 
