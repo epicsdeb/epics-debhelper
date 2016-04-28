@@ -1,0 +1,27 @@
+=head1 NAME
+
+dh_epics_hostarch - Print EPICS target name for a Debian architecture
+
+=head1 SYNOPSIS
+
+=head1 SYNOPSIS
+
+B<dh_epics_hostarch> [HOST|BUILD|TARGET]
+
+=head1 DESCRIPTION
+
+B<dh_epics_hostarch> prints the EPICS target name associated with a debian architecture.
+An argument can be given to select one of three possibilities (HOST, BUILD, or TARGET).
+If no argument is given then HOST is assumed.
+
+=head1 SEE ALSO
+
+L<debhelper(7)>, L<epics-debhelper(7)>
+
+This program is a not part of the official debhelper package.
+
+=head1 AUTHOR
+
+Michael Davidsaver <mdavidsaver@gmail.com>
+
+=cut

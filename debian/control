@@ -14,12 +14,23 @@ Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
          ${misc:Depends}, debhelper (>= 7.0.50~), libparse-debcontrol-perl,
          libtie-ixhash-perl,
+Recommends: dh-exec-epics,
 Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
  A collection of programs that can be used in a debian/rules file to
  automate common tasks related to building EPICS Debian packages.
  These tools integrate with the debhelper collection.
  Only needed when creating packages.
+
+Package: dh-exec-epics
+Architecture: all
+Depends: ${perl:Depends}, perl (>= 5.10.0),
+         ${misc:Depends},
+         dh-exec
+Description: EPICS related helpers for dh-exec
+ Helpers for dh-exec for epics related tasks.
+ .
+ dh-exec-subst-epics - Expands some EPICS_* variables
 
 Package: rtems-debhelper
 Architecture: all

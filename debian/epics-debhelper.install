@@ -1,2 +1,3 @@
 usr/bin
 usr/share/perl5/Debian/Debhelper
+default.mk usr/share/epics-debhelper

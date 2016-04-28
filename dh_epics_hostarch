@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+# Get the EPICS target name associated with the debian host
+# arch. as opposed to the build arch. which would be
+# detected by /usr/lib/epics/startup/EpicsHostArch
+
+die() {
+  echo "$1" >&1
+  exit 1
+}
+
+KIND="$1"
+[ "$KIND" ] || KIND="HOST"
+
+ARCH=$(dpkg-architecture -qDEB_${KIND}_ARCH)
+
+case "$ARCH" in
+arm)     echo "linux-arm";;
+armeb)   echo "linux-arm_eb";;
+armel)   echo "linux-arm_el";;
+amd64)   echo "linux-x86_64";;
+i386)    echo "linux-x86";;
+powerpc) echo "linux-ppc";;
+ppc64)   echo "linux-ppc64";;
+*)       die "Unsupported debian arch $ARCH"
+esac

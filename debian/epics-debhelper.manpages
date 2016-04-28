@@ -1,2 +1,3 @@
 epics-debhelper.7
+dh_epics_hostarch.1
 debian/tmp/usr/share/man/man1/dh_*.1p

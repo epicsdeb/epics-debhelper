@@ -12,6 +12,6 @@ WriteMakefile (
                    qw(dh_epics_install dh_epics_lintian),
                    qw(dh_epics_list_targets dh_epics_installlibs),
                    qw(dh_epicsdep dh_epics_postinstall),
-                   qw(dh_makeshlibs_epics),
+                   qw(dh_makeshlibs_epics dh_epics_hostarch),
                  ],
 );

@@ -1,0 +1,14 @@
+#!/usr/bin/perl -wnp
+
+BEGIN {
+    sub qepics {
+        my $var = shift;
+        if ($var =~ m/EPICS_([A-Z]+)_ARCH/) {
+            my $ret = `dh_epics_hostarch $1`;
+            chomp($ret);
+            return $ret;
+        }
+    }
+}
+
+s/(\$\{(EPICS_[A-Z_]+)\})/qepics($2) || $1/eg;

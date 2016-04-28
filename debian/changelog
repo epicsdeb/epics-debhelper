@@ -1,3 +1,18 @@
+epics-debhelper (8.16) unstable; urgency=medium
+
+  * Add dh_epics_hostarch
+     Translate debian archs. to EPICS targets using information from
+     'dpkg-architecture'.
+  * Add dh-exec-subst-epics
+     Helper for dh-exec --with=subst which expands
+      ${EPICS_HOST_ARCH}, ${EPICS_BUILD_ARCH}, ${EPICS_TARGET_ARCH}
+      using dh_epics_hostarch.
+  * add /usr/share/epics-debhelper/default.mk
+      Defines EPICS_BASE=/usr/lib/epics and EPICS_HOST_ARCH
+      Neither is export'ed
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 27 Apr 2016 20:34:59 -0400
+
 epics-debhelper (8.15) unstable; urgency=medium
 
   * Fix dh_makeshlibs_epics not creating shlibs for *-dev.

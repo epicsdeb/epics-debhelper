@@ -16,6 +16,7 @@ build-stamp:
 	dh build --until auto_build
 
 	pod2man --section=7 epics-debhelper.txt epics-debhelper.7
+	pod2man --section=1 dh_epics_hostarch.txt dh_epics_hostarch.1
 
 	dh build --after auto_build
 	touch $@
@@ -23,6 +24,6 @@ build-stamp:
 clean:
 	dh clean --until auto_clean
 
-	rm -f epics-debhelper.7
+	rm -f *.7 *.1
 
 	dh clean --after auto_clean
