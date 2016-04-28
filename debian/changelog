@@ -5,8 +5,10 @@ epics-debhelper (8.16) unstable; urgency=medium
      'dpkg-architecture'.
   * Add dh-exec-subst-epics
      Helper for dh-exec --with=subst which expands
-      ${EPICS_HOST_ARCH}, ${EPICS_BUILD_ARCH}, ${EPICS_TARGET_ARCH}
-      using dh_epics_hostarch.
+     ${EPICS_HOST_ARCH}, ${EPICS_BUILD_ARCH}, ${EPICS_TARGET_ARCH}
+     using dh_epics_hostarch, and ${EPICS_BASE} to "usr/lib/epics".
+     All can be overridden by settings the an environment variable
+     of the same name.
   * add /usr/share/epics-debhelper/default.mk
       Defines EPICS_BASE=/usr/lib/epics and EPICS_HOST_ARCH
       Neither is export'ed

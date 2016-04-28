@@ -3,10 +3,17 @@
 BEGIN {
     sub qepics {
         my $var = shift;
-        if ($var =~ m/EPICS_([A-Z]+)_ARCH/) {
+
+        if (exists $ENV{$var}) { # allow any to be overridden from environment
+            return $ENV{$var};
+
+        } elsif ($var =~ m/EPICS_([A-Z]+)_ARCH/) {
             my $ret = `dh_epics_hostarch $1`;
             chomp($ret);
             return $ret;
+
+        } elsif ($var eq "EPICS_BASE") {
+            return "usr/lib/epics";
         }
     }
 }
