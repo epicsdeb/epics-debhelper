@@ -30,13 +30,17 @@ sub epics_sover {
         return $ENV{SHRLIB_VERSION};
     }
 
-    # format of the version: [epoch:]upstream_version[-debian_revision]
+    # format of the version: [epoch:]upstream_version[-debian_revision][suffix]
     my $version=`dpkg-parsechangelog`;
 
     # extract upstream_version and debian_revision
     my ($ver) = $version =~ m/Version:\s*(?:\d*:)?([0-9a-zA-Z.+\-:~]*)/m;
 
-    if($ver =~ /(.*)-[^-]*/) { # strip debian version
+    # strip suffix if present (suffix starts with ":", "+", or "~")
+    ($ver) = $ver =~ m/(?:\d*:)?([0-9a-zA-Z.\-]+)[:\+~].*/m;
+
+    # strip debian_revision if present
+    if($ver =~ /(.*)-[^-]*/) {
         ($ver) = $1;
     }
     return $ver;
