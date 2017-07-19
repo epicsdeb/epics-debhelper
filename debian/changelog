@@ -1,8 +1,9 @@
-epics-debhelper (8.17) UNRELEASED; urgency=medium
+epics-debhelper (8.17) unstable; urgency=medium
 
+  [ Michael Davidsaver ]
   * Debian 9 compatibility
 
- -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 19 Jul 2017 12:48:22 +0200
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Wed, 19 Jul 2017 14:46:10 +0200
 
 epics-debhelper (8.16) unstable; urgency=medium
 
