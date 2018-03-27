@@ -2,28 +2,12 @@
 
 export DH_VERBOSE=1
 
-binary binary-arch binary-indep install:
+%:
 	dh $@
-install: build
-binary-arch binary-indep: install
-binary: binary-arch binary-indep
 
-build: build-arch build-indep
-build-arch: build-stamp
-build-indep: build-stamp
-
-build-stamp:
-	dh build --until auto_build
-
+override_dh_auto_build:
 	pod2man --section=7 epics-debhelper.txt epics-debhelper.7
 	pod2man --section=1 dh_epics_hostarch.txt dh_epics_hostarch.1
 
-	dh build --after auto_build
-	touch $@
-
-clean:
-	dh clean --until auto_clean
-
+override_dh_auto_clean:
 	rm -f *.7 *.1
-
-	dh clean --after auto_clean
