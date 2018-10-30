@@ -18,7 +18,16 @@ sub setepicsenv {
         $ENV{EPICS_BASE} = "/usr/lib/epics";
     }
     if (not exists $ENV{EPICS_HOST_ARCH}) {
-        $ENV{EPICS_HOST_ARCH} = `$ENV{EPICS_BASE}/startup/EpicsHostArch.pl`;
+        my $EHA_PATH;
+        if (-r "$ENV{EPICS_BASE}/lib/perl/EpicsHostArch.pl") {
+            $EHA_PATH = "$ENV{EPICS_BASE}/lib/perl/EpicsHostArch.pl";
+        } elsif (-r "$ENV{EPICS_BASE}/src/tools/EpicsHostArch.pl") {
+            $EHA_PATH = "$ENV{EPICS_BASE}/src/tools/EpicsHostArch.pl";
+        } else {
+            $EHA_PATH = "$ENV{EPICS_BASE}/startup/EpicsHostArch.pl";
+        }
+        $ENV{EPICS_HOST_ARCH} = `/usr/bin/perl ${EHA_PATH}`;
+        chomp($ENV{EPICS_HOST_ARCH});
     }
 }
 
@@ -30,10 +39,11 @@ sub epics_sover {
         return $ENV{SHRLIB_VERSION};
     }
 
+    # format of the version: [epoch:]upstream_version[-debian_revision]
     my $version=`dpkg-parsechangelog`;
 
-    # [IGNORE:]INTERESTING[-IGNORE]
-    my ($ver) = $version =~ m/Version:\s*(?:\d*:)?([\d:.+-~]*)/m;
+    # extract upstream_version and debian_revision
+    my ($ver) = $version =~ m/Version:\s*(?:\d*:)?([0-9a-zA-Z.+\-:~]*)/m;
 
     if($ver =~ /(.*)-[^-]*/) { # strip debian version
         ($ver) = $1;

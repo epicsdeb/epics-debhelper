@@ -1,0 +1,19 @@
+sudo: required
+dist: trusty
+language: generic
+
+services:
+  - docker
+
+script:
+  - wget -O- http://travis.debian.net/script.sh | sh -
+
+branches:
+  except:
+    - /^debian\/\d/
+
+matrix:
+  include:
+  - env: TRAVIS_DEBIAN_DISTRIBUTION=wheezy
+  - env: TRAVIS_DEBIAN_DISTRIBUTION=jessie
+  - env: TRAVIS_DEBIAN_DISTRIBUTION=stretch
