@@ -1,3 +1,10 @@
+epics-debhelper (8.19) unstable; urgency=medium
+
+  * Bump up standards version
+  * Override a Lintian warning
+
+ -- Martin Konrad <konrad@frib.msu.edu>  Thu, 20 Jun 2019 14:03:52 -0400
+
 epics-debhelper (8.18) unstable; urgency=medium
 
   * Fix EPICS_HOST_ARCH.pl path for Base >=3.15.6
