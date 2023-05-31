@@ -88,7 +88,7 @@ OVERRIDE
                 $comment = 1;
                 $overrides = $overrides . "# No stripping for *-debug targets unless -dbg package is created\n";
             }
-            $overrides = $overrides . "$pkg: unstripped-binary-or-object $file\n";
+            $overrides = $overrides . "$pkg: unstripped-binary-or-object *$file*\n";
         }
     } elsif($pkg =~ m/^lib/) {
         $overrides = << "OVERRIDE";
