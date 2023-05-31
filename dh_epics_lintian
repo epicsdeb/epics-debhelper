@@ -94,7 +94,7 @@ OVERRIDE
                 $comment = 1;
                 $overrides = $overrides . "# No stripping for *-debug targets unless -dbg package is created\n";
             }
-	    if($new_lintian_format){
+            if($new_lintian_format){
                 $overrides = $overrides . "$pkg: unstripped-binary-or-object [$file]\n";
             }
             else{
