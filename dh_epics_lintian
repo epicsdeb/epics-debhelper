@@ -44,6 +44,7 @@ a *-dbg package is also being produced.
 
 use strict;
 use warnings;
+use version;
 use Debian::Debhelper::Dh_Lib;
 use Debian::Debhelper::Dh_Epics qw(setepicsenv);
 
@@ -53,6 +54,11 @@ setepicsenv();
 
 # Are we building any *-dbg package?
 my $hasdbg = 0;
+
+my $new_lintian_format = 0;
+my $changeover_version = version->parse('2.115.1');
+my $lintian_version = `dpkg -s lintian | grep "^Version:" | cut -d' ' -f2`;
+$new_lintian_format = 1 if(version->parse($lintian_version) >= $changeover_version);
 
 foreach my $pkg (getpackages()) {
     $hasdbg = 1 if($pkg =~ m/-dbg$/);
@@ -88,7 +94,12 @@ OVERRIDE
                 $comment = 1;
                 $overrides = $overrides . "# No stripping for *-debug targets unless -dbg package is created\n";
             }
-            $overrides = $overrides . "$pkg: unstripped-binary-or-object $file\n";
+            if($new_lintian_format){
+                $overrides = $overrides . "$pkg: unstripped-binary-or-object [$file]\n";
+            }
+            else{
+                $overrides = $overrides . "$pkg: unstripped-binary-or-object $file\n";
+            }
         }
     } elsif($pkg =~ m/^lib/) {
         $overrides = << "OVERRIDE";
