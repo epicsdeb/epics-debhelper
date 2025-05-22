@@ -1,0 +1,3 @@
+# this is itself a toolchain package
+# it needs debhelper to function correctly
+epics-debhelper: binary-package-depends-on-toolchain-package Depends: debhelper*

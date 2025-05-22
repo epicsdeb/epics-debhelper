@@ -1,18 +1,18 @@
 Source: epics-debhelper
 Section: devel
 Priority: optional
-Maintainer: Martin Konrad <konrad@frib.msu.edu>
+Maintainer: Evan Daykin <daykin@frib.msu.edu>
 Uploaders: Michael Davidsaver <mdavidsaver@gmail.com>,
            Ralph Lange <Ralph.Lange@gmx.de>
-Build-Depends: debhelper (>= 7.0.50~),
+Build-Depends: debhelper (>= 13),
                perl (>= 5.10.0),
-Standards-Version: 3.9.6
+Standards-Version: 4.6.2
 Homepage: http://pubweb.bnl.gov/~mdavidsaver
 
 Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
-         ${misc:Depends}, debhelper (>= 7.0.50~), libparse-debcontrol-perl,
+         ${misc:Depends}, debhelper (>= 13), libparse-debcontrol-perl,
          libtie-ixhash-perl,
 Recommends: dh-exec-epics,
 Conflicts: rtems-debhelper (<< 6~)
@@ -35,7 +35,7 @@ Description: EPICS related helpers for dh-exec
 Package: rtems-debhelper
 Architecture: all
 Section: oldlibs
-Priority: extra
+Priority: optional
 Depends: ${misc:Depends}, epics-debhelper (= ${source:Version})
 Description: Helper for building EPICS packages (transitional package)
  A helper script to calculate package dependencies
