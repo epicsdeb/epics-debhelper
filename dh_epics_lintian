@@ -57,7 +57,7 @@ my $hasdbg = 0;
 
 my $new_lintian_format = 0;
 my $changeover_version = version->parse('2.115.1');
-my $lintian_version = `dpkg -s lintian | grep "^Version:" | cut -d' ' -f2`;
+my $lintian_version = `dpkg -s lintian | grep "^Version:" | cut -d' ' -f2 | tr -d '\n'`;
 $new_lintian_format = 1 if(version->parse($lintian_version) >= $changeover_version);
 
 foreach my $pkg (getpackages()) {
