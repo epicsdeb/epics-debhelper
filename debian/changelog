@@ -2,6 +2,7 @@ epics-debhelper (12.1) unstable; urgency=medium
 
   [ Evan Daykin ]
   * use tr to strip newline from version variable
+  * Updated FSF address
 
  -- Evan Daykin <daykin@frib.msu.edu>  Mon, 23 Jun 2025 15:17:07 +0000
 
@@ -13,6 +14,13 @@ epics-debhelper (12.0) unstable; urgency=medium
   * bump standards-version and debhelper compat to latest
 
  -- Evan Daykin <daykin@frib.msu.edu>  Thu, 22 May 2025 13:51:14 -0400
+
+epics-debhelper (8.19) unstable; urgency=medium
+
+  * Bump up standards version
+  * Override a Lintian warning
+
+ -- Martin Konrad <konrad@frib.msu.edu>  Thu, 20 Jun 2019 14:03:52 -0400
 
 epics-debhelper (8.18) unstable; urgency=medium
 
