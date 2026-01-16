@@ -14,7 +14,7 @@ Package: epics-debhelper
 Architecture: all
 Depends: ${perl:Depends}, perl (>= 5.10.0),
          ${misc:Depends}, debhelper (>= 13), libparse-debcontrol-perl,
-         libtie-ixhash-perl,
+         libtie-ixhash-perl, lintian
 Recommends: dh-exec-epics,
 Conflicts: rtems-debhelper (<< 6~)
 Description: Helper for building EPICS packages
