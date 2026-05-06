@@ -60,7 +60,7 @@ sub do_make {
     verbose_print("export LD_LIBRARY_PATH=$ENV{LD_LIBRARY_PATH}");
 
     unshift(@_, ("LINKER_USE_RPATH=NO", "USE_RPATH=NO",
-            "SHRLIB_VERSION=${sov}", "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
+            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
             "CROSS_COMPILER_TARGET_ARCHS=$targets"));
     $this->SUPER::do_make(@_);
 }
