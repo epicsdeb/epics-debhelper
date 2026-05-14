@@ -59,9 +59,15 @@ sub do_make {
     verbose_print("export PATH=$ENV{PATH}");
     verbose_print("export LD_LIBRARY_PATH=$ENV{LD_LIBRARY_PATH}");
 
-    unshift(@_, ("LINKER_USE_RPATH=NO", "USE_RPATH=NO",
-            "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
-            "CROSS_COMPILER_TARGET_ARCHS=$targets"));
+    my @flags = (
+        "LINKER_USE_RPATH=NO",
+        "USE_RPATH=NO",
+        "EPICS_HOST_ARCH=$ENV{EPICS_HOST_ARCH}",
+        "CROSS_COMPILER_TARGET_ARCHS=$targets",
+    );
+    push @flags, "SHRLIB_VERSION=$sov" if $sov;
+
+    unshift(@_, @flags);
     $this->SUPER::do_make(@_);
 }
 
