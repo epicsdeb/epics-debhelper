@@ -27,7 +27,7 @@ setepicsenv();
 
 for my $file("RELEASE","CONFIG","CONFIG_SITE","CONFIG_APP") {
     if(-e "debian/tmp/$ENV{EPICS_BASE}/configure/$file") {
-        doit("rm", "debian/tmp/$ENV{EPICS_BASE}/configure/$file");
+        doit("rm", "-f", "debian/tmp/$ENV{EPICS_BASE}/configure/$file");
     }
 }
 

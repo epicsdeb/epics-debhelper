@@ -5,6 +5,7 @@ Maintainer: Evan Daykin <daykin@frib.msu.edu>
 Uploaders: Michael Davidsaver <mdavidsaver@gmail.com>,
            Ralph Lange <Ralph.Lange@gmx.de>
 Build-Depends: debhelper (>= 13),
+               debhelper-compat (= 13),
                perl (>= 5.10.0),
 Standards-Version: 4.6.2
 Homepage: http://pubweb.bnl.gov/~mdavidsaver

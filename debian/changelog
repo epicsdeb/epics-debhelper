@@ -1,3 +1,17 @@
+epics-debhelper (12.3) unstable; urgency=medium
+
+  * recognize MANUAL_SOVER flag for submodules with different versions
+
+ -- Evan Daykin <daykin@frib.msu.edu>  Thu, 14 May 2026 09:53:02 -0400
+
+epics-debhelper (12.2) unstable; urgency=medium
+
+  [ Evan Daykin ]
+  * Use debhelper-compat instead of debian/compat
+  * rm -f configure files in dh_epics_postinstall
+
+ -- Evan Daykin <daykin@frib.msu.edu>  Tue, 24 Jun 2025 18:23:22 +0000
+
 epics-debhelper (12.1) unstable; urgency=medium
 
   [ Evan Daykin ]

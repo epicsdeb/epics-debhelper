@@ -39,6 +39,10 @@ sub epics_sover {
         return $ENV{SHRLIB_VERSION};
     }
 
+    if( ($ENV{MANUAL_SOVER} // "") eq "YES" ){
+        return "";
+    }
+
     # format of the version: [epoch:]upstream_version[-debian_revision]
     my $version=`dpkg-parsechangelog`;
 
